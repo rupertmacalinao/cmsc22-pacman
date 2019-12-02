@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	private GameMenu menu;
-	private GameStage gstage;
+	//private GameStage gstage;
 	
 	@Override
 	public void start(Stage stage) {
@@ -17,6 +17,8 @@ public class Main extends Application {
 			stage.setScene(scene);
 			stage.setTitle("PAC-MAN");
 			stage.show();
+//			GameStage gs = new GameStage();
+//			gs.setStage(stage);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

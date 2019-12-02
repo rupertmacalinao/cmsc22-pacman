@@ -1,5 +1,10 @@
 package pacman;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Scanner;
+
 import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -27,9 +32,10 @@ public class GameMenu extends Parent{
 	public static final int MENU_RWIDTH = 400;
 	public static final int MENU_RHEIGHT = 65;
 	public static final int MENU_YOFFSET = -10;
-	public static final Image backgroundIMG = newImageBackground("images/Main Menu.png");
+	public static final Image backgroundIMG = newImageBackground("images/bgGIF.gif");
 	public static final Image aboutIMG = newImageBackground("images/About.png");
 	public static final Image instructionsIMG = newImageBackground("images/Instructions.png");
+	public static final Image highScoreIMG = newImageBackground("images/blank_2.png");
 	
 	public Parent createContent(Stage stage) {
 		this.stage = stage;
@@ -47,12 +53,13 @@ public class GameMenu extends Parent{
 		MenuItem exit = new MenuItem("EXIT", MENU_RHEIGHT, MENU_RWIDTH, MENU_FONTSIZE, 0, MENU_YOFFSET);
 		MenuItem about = this.newToggleMenu("ABOUT", aboutIMG);
 		MenuItem instructions = this.newToggleMenu("HOW TO PLAY", instructionsIMG);
+		MenuItem highScore = this.menuHighScore("HIGH SCORE", highScoreIMG);
 		
 		start.setOnMouseClicked(event -> this.loadGame());
 		exit.setOnMouseClicked(event -> System.exit(0));
 			
 		//Compiles menu items
-		MenuBox menu = new MenuBox(start, about, instructions, exit);
+		MenuBox menu = new MenuBox(start, about, instructions, highScore, exit);
 		menu.setSpacing(7);
 		menu.setTranslateX(GameStage.WINDOW_WIDTH*0.33);
 		menu.setTranslateY(GameStage.WINDOW_HEIGHT*0.4);
@@ -60,12 +67,14 @@ public class GameMenu extends Parent{
 	}
 	
 	public void loadGame() {
-		Group gameroot = new Group();
-		this.changeBackground(gameroot, GameStage.MAP_IMAGE);
+		Group gameroot = new Group(); 
+		//this.changeBackground(gameroot, GameStage.MAP_IMAGE);
 		this.canvas = new Canvas(GameStage.WINDOW_WIDTH, GameStage.WINDOW_HEIGHT);
 		this.gc = this.canvas.getGraphicsContext2D();
 		gameroot.getChildren().add(canvas);
 		Scene gameScene = new Scene(gameroot, GameStage.WINDOW_WIDTH, GameStage.WINDOW_HEIGHT,Color.BLACK);
+//		GameStage gs = new GameStage();
+//		gs.setStage(stage);
 		this.gametimer = new GameTimer(this.gc, gameScene);
 		this.stage.setScene(gameScene);
 		this.gametimer.start();
@@ -109,6 +118,45 @@ public class GameMenu extends Parent{
 			back.setOnMouseClicked(event2 -> {
 				menuFade(menuBackground, 1, 0);
 				this.root.getChildren().remove(menuBackground);
+				this.root.getChildren().remove(back);
+			});
+		});
+		
+		return menu;
+	}
+	
+	//HIGH SCORE
+	public MenuItem menuHighScore(String name, Image img) {
+		MenuItem menu = new MenuItem(name, MENU_RHEIGHT, MENU_RWIDTH, MENU_FONTSIZE, 0, MENU_YOFFSET);
+		
+		menu.setOnMouseClicked(event -> {
+			ImageView menuBackground = this.changeBackground(this.root, img);
+			MenuItem back = new MenuItem("BACK", MENU_RHEIGHT, MENU_RWIDTH, 30, 0, -5);
+			back.setTranslateX(GameStage.WINDOW_WIDTH*0.75);
+			back.setTranslateY(GameStage.WINDOW_HEIGHT*0.06);
+			
+			int highScore = 0;
+			File file = new File("src/pacman/highScore.txt");
+			try {
+				Scanner scan = new Scanner(file);
+				highScore = scan.nextInt();
+				scan.close();
+				System.out.println(highScore);
+			}catch (IOException i) {
+	            System.out.println("cant read file");
+	        }
+			
+			this.gc.setFont(Font.loadFont("file:src/fonts/Pixellari.ttf", 50));
+			this.gc.setFill(Color.WHITE);
+			this.gc.fillText("HIGH SCORE", GameStage.WINDOW_WIDTH*0.40, GameStage.WINDOW_HEIGHT*0.45, GameStage.WINDOW_WIDTH*0.4);
+			this.gc.fillText(" " + highScore, GameStage.WINDOW_WIDTH*0.46, GameStage.WINDOW_HEIGHT*0.55, GameStage.WINDOW_WIDTH*0.4);	
+			
+			this.root.getChildren().add(canvas);
+			this.root.getChildren().add(back);
+			back.setOnMouseClicked(event2 -> {
+				menuFade(menuBackground, 1, 0);
+				this.root.getChildren().remove(menuBackground);
+				this.root.getChildren().remove(canvas);
 				this.root.getChildren().remove(back);
 			});
 		});

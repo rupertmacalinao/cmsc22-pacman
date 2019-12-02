@@ -10,6 +10,8 @@ public class Sprite {
 	protected boolean visible;
 	protected double width;
 	protected double height;
+	protected Rectangle2D front;
+	protected String facing;
 	
 	public Sprite(int xPos, int yPos){
 		this.x = xPos;
@@ -29,6 +31,9 @@ public class Sprite {
 	void render(GraphicsContext gc){
 		gc.drawImage(this.img, this.x, this.y);
     }
+	void render(Image weakImg,GraphicsContext gc){
+		gc.drawImage(weakImg, this.x, this.y);
+    }
 	
 	//method to set the object's width and height properties
 	private void setSize(){
@@ -42,8 +47,14 @@ public class Sprite {
 
 		return rectangle1.intersects(rectangle2);
 	}
+	
+	public boolean collidesWith(Rectangle2D rect2)	{
+		Rectangle2D rectangle1 = this.getBounds();
+		
+		return rectangle1.intersects(rect2);
+	}
 	//method that will return the bounds of an image
-	private Rectangle2D getBounds(){
+	public Rectangle2D getBounds(){
 		return new Rectangle2D(this.x, this.y, this.width, this.height);
 	}
 	
@@ -94,5 +105,44 @@ public class Sprite {
 		
 	public void setVisible(boolean value){
 		this.visible = value;
+	}
+	
+	public void setFront(Rectangle2D front) {
+		this.front=front;
+	}
+	public Rectangle2D getFront() {
+		return this.front;
+	}
+	public void setFrontRectangle() {
+		switch (this.facing) {
+		case "UP": 
+			Rectangle2D front = new Rectangle2D(this.getX()+10,this.getY()-10,5,5);
+			this.setFront(front);
+			break;
+		case "DOWN": 
+			Rectangle2D front2 = new Rectangle2D(this.getX()+10,this.getY()+this.height+10,5,5);
+			this.setFront(front2);
+			break;
+		case "LEFT": 
+			Rectangle2D front3 = new Rectangle2D(this.getX()-10,this.getY()+10,5,5);
+			this.setFront(front3);
+			break;
+		case "RIGHT": 
+			Rectangle2D front4 = new Rectangle2D(this.getX()+this.width+10,this.getY()+10,5,5);
+			this.setFront(front4);
+			break;
+		}
+	}	
+	public void setFacing(String facing){
+		this.facing=facing;
+	}
+	public String getFacing() {
+		return this.facing;
+	}
+	public void setX(int x) {
+		this.x=x;
+	}
+	public void setY(int y) {
+		this.y=y;
 	}
 }
