@@ -1,21 +1,21 @@
 package pacman;
 
-import javafx.geometry.Rectangle2D;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Sprite {
 	protected Image img;
-	protected int x, y, dx, dy;
+	protected double x, y, dx, dy, px, py;
 	protected boolean visible;
 	protected double width;
 	protected double height;
-	protected Rectangle2D front;
-	protected String facing;
+	protected double speed;
 	
-	public Sprite(int xPos, int yPos){
-		this.x = xPos;
-		this.y = yPos;
+	public Sprite(int x, int y){
+		this.x = this.px = x;
+		this.y = this.py = y;
+		this.speed = 0.125;
+		this.dx = 0;
+		this.dy = 0;
 		this.visible = true;
 	}
 	
@@ -27,35 +27,10 @@ public class Sprite {
 		} catch(Exception e){}
 	}
 	
-	//method to set the image to the image view node
-	void render(GraphicsContext gc){
-		gc.drawImage(this.img, this.x, this.y);
-    }
-	void render(Image weakImg,GraphicsContext gc){
-		gc.drawImage(weakImg, this.x, this.y);
-    }
-	
 	//method to set the object's width and height properties
 	private void setSize(){
 		this.width = this.img.getWidth();
 	    this.height = this.img.getHeight();
-	}
-	//method that will check for collision of two sprites
-	public boolean collidesWith(Sprite rect2)	{
-		Rectangle2D rectangle1 = this.getBounds();
-		Rectangle2D rectangle2 = rect2.getBounds();
-
-		return rectangle1.intersects(rectangle2);
-	}
-	
-	public boolean collidesWith(Rectangle2D rect2)	{
-		Rectangle2D rectangle1 = this.getBounds();
-		
-		return rectangle1.intersects(rect2);
-	}
-	//method that will return the bounds of an image
-	public Rectangle2D getBounds(){
-		return new Rectangle2D(this.x, this.y, this.width, this.height);
 	}
 	
 	//method to return the image
@@ -64,35 +39,27 @@ public class Sprite {
 	}
 	//getters
 	public int getX() {
-    	return this.x;
+    	return (int) this.x;
 	}
 
 	public int getY() {
-    	return this.y;
+    	return (int) this.y;
 	}
 	
-	public int getDX(){
+	public int getPX() {
+		return (int) this.px;
+	}
+	
+	public int getPY() {
+		return (int) this.py;
+	}
+	
+	public double getDX() {
 		return this.dx;
 	}
-	public int getDY(){
+	
+	public double getDY() {
 		return this.dy;
-	}
-	
-	public boolean getVisible(){
-		return visible;	
-	}
-	public boolean isVisible(){
-		if(visible) return true;
-		return false;
-	}
-	
-	//setters
-	public void setDX(int dx){
-		this.dx = dx;
-	}
-	
-	public void setDY(int dy){
-		this.dy = dy;
 	}
 	
 	public void setWidth(double val){
@@ -102,47 +69,47 @@ public class Sprite {
 	public void setHeight(double val){
 		this.height = val;
 	}
+	
+	public void move(){
+		double newX = this.x + this.dx, newY = this.y + this.dy;
 		
-	public void setVisible(boolean value){
-		this.visible = value;
+		if(newX > 0 && newX < GameTimer.MAP_LENGTH && !isNextPosWall((int) this.y, (int) newX)) {
+			this.px = this.x;
+			this.x += this.dx;
+		}
+		if(newY > 0 && newY < GameTimer.MAP_HEIGHT && !isNextPosWall((int)newY, (int)this.x)) {
+			this.py = this.y;
+			this.y += this.dy;
+		}
 	}
 	
-	public void setFront(Rectangle2D front) {
-		this.front=front;
+	public void setDxDy(double dx, double dy) {
+		this.dx = dx;
+		this.dy = dy;
 	}
-	public Rectangle2D getFront() {
-		return this.front;
+	
+	public void moveLeft(Image img) {
+		this.loadImage(img);
+		this.setDxDy(-this.speed, 0);
 	}
-	public void setFrontRectangle() {
-		switch (this.facing) {
-		case "UP": 
-			Rectangle2D front = new Rectangle2D(this.getX()+10,this.getY()-10,5,5);
-			this.setFront(front);
-			break;
-		case "DOWN": 
-			Rectangle2D front2 = new Rectangle2D(this.getX()+10,this.getY()+this.height+10,5,5);
-			this.setFront(front2);
-			break;
-		case "LEFT": 
-			Rectangle2D front3 = new Rectangle2D(this.getX()-10,this.getY()+10,5,5);
-			this.setFront(front3);
-			break;
-		case "RIGHT": 
-			Rectangle2D front4 = new Rectangle2D(this.getX()+this.width+10,this.getY()+10,5,5);
-			this.setFront(front4);
-			break;
-		}
-	}	
-	public void setFacing(String facing){
-		this.facing=facing;
+	
+	public void moveRight(Image img) {
+		this.loadImage(img);
+		this.setDxDy(this.speed, 0);
 	}
-	public String getFacing() {
-		return this.facing;
+	
+	public void moveUp(Image img) {
+		this.loadImage(img);
+		this.setDxDy(0, -this.speed);
 	}
-	public void setX(int x) {
-		this.x=x;
+	
+	public void moveDown(Image img) {
+		this.loadImage(img);
+		this.setDxDy(0, this.speed);
 	}
-	public void setY(int y) {
-		this.y=y;
+	
+	public boolean isNextPosWall(int row, int col) {
+		try{if(GameTimer.GAME_MAP[row][col] == 1) return true;} catch(Exception e) {}
+		return false;
 	}
 }

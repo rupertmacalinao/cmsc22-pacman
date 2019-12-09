@@ -5,8 +5,7 @@ import javafx.scene.image.Image;
 public class Fruit extends Sprite{
 	private boolean alive;
 	private String type;
-	
-	private final static int FRUIT_SIZE = 30;
+	private static int FRUIT_SIZE = 20;
 	public final static Image CHERRY_IMG = new Image("images/cherry.png", FRUIT_SIZE, FRUIT_SIZE, false, false);
 	public final static Image APPLE_IMG = new Image("images/apple.png", FRUIT_SIZE, FRUIT_SIZE, false, false);
 	public final static Image STRAWBERRY_IMG = new Image("images/strawberry.png", FRUIT_SIZE, FRUIT_SIZE, false, false);

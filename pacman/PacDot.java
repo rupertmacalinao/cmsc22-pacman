@@ -5,9 +5,9 @@ import javafx.scene.image.Image;
 public class PacDot extends Sprite{
 	private boolean alive;
 	
-	private final static int PACDOT_SIZE = 15;
-	public final static Image PACDOT_IMG = new Image("images/pacdot2.png", PACDOT_SIZE, PACDOT_SIZE, false, false);
-	
+	private final static int PACDOT_SIZE = 10;
+	public static Image PACDOT_IMG = new Image("images/pacdot2.png", GameTimer.CELL_WIDTH/3, GameTimer.CELL_HEIGHT/3, false, false);
+	public static Image BPACDOT_IMG = new Image("images/cherry.png", GameTimer.CELL_WIDTH, GameTimer.CELL_HEIGHT,false,false);
 	public PacDot(int x, int y){
 		super(x,y);
 		this.alive = true;
@@ -21,7 +21,5 @@ public class PacDot extends Sprite{
 
 	public void die(){
     	this.alive = false;
-    	this.x=0;
-    	this.y=0;
     }
 }

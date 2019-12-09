@@ -67,15 +67,11 @@ public class GameMenu extends Parent{
 	}
 	
 	public void loadGame() {
-		Group gameroot = new Group(); 
-		//this.changeBackground(gameroot, GameStage.MAP_IMAGE);
-		this.canvas = new Canvas(GameStage.WINDOW_WIDTH, GameStage.WINDOW_HEIGHT);
-		this.gc = this.canvas.getGraphicsContext2D();
-		gameroot.getChildren().add(canvas);
+		Group gameroot = new Group();
+		GridPane gp = new GridPane();
+		this.changeBackground(gameroot, null);
 		Scene gameScene = new Scene(gameroot, GameStage.WINDOW_WIDTH, GameStage.WINDOW_HEIGHT,Color.BLACK);
-//		GameStage gs = new GameStage();
-//		gs.setStage(stage);
-		this.gametimer = new GameTimer(this.gc, gameScene);
+		this.gametimer = new GameTimer(gameroot, gameScene, gp);
 		this.stage.setScene(gameScene);
 		this.gametimer.start();
 		this.stage.show();
@@ -125,7 +121,6 @@ public class GameMenu extends Parent{
 		return menu;
 	}
 	
-	//HIGH SCORE
 	public MenuItem menuHighScore(String name, Image img) {
 		MenuItem menu = new MenuItem(name, MENU_RHEIGHT, MENU_RWIDTH, MENU_FONTSIZE, 0, MENU_YOFFSET);
 		
